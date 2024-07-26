@@ -7,7 +7,7 @@
 - Career
 - Job list IT 
 - https://www.itjobs.pt/
-
+- sortlist 
 
 TODO
 
@@ -21,7 +21,10 @@ contact decathlon to see how you can solve it with them
 
 
 website to extract job from 
+Ok
 https://www.itjobs.pt/
+
+Todo 
 https://www.linkedin.com/
 https://englishjobs.pt/jobs/python
 indeed.com

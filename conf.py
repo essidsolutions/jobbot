@@ -1,9 +1,15 @@
-
+import os 
 
 
 
 class extractSitemaps:
-    def __init__(self, url):
+    def __init__(self, name):
+        main_sitemaps = f"collected/{name}/sitemap/main"
+        sub_sitemaps = f"collected/{name}/sitemap/sub"
+
+        
+        os.makedirs(sub_sitemaps, exist_ok=True)
+
         self.now = datetime.datetime.now()
         self.url = url
         self.sitemaps = []

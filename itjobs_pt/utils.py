@@ -3,11 +3,16 @@ import re
 import requests
 from datetime import datetime  
 from xml.etree import ElementTree as ET
+import pandas as pd
+
+name = "itjobs_pt"
+robots_url = "https://www.itjobs.pt/robots.txt"
+sitename_utl = "https://www.itjobs.pt/sitemap.xml"
 
 # Get the current date in YYYYMMDD format
 current_date = datetime.now().strftime("%Y%m%d")
 
-def download_main_sitemap(name, sitemap_url):
+def download_main_sitemap(sitemap_url):
     filename = f"sitemap_{current_date}.xml"
     # Set a user-agent header
     headers = {
@@ -26,7 +31,7 @@ def download_main_sitemap(name, sitemap_url):
 
 
 
-def get_last_sitemap(name):
+def get_last_sitemap():
     # Parse the XML file
     main_sitemaps = f"collected/{name}/sitemap/main"
     sub_sitemaps = f"collected/{name}/sitemap/sub"
@@ -59,38 +64,24 @@ def get_last_sitemap(name):
     # store the sitemap urls in a database for future reference
     # store all data in the database including emails and phone numbers and other contact information
 
-def download_sub_sitemap(name):
-    # Define the directory where the sitemaps will be saved
-    sub_sitemaps = f"collected/{name}/sitemap/sub"
-    if not os.path.exists(sub_sitemaps):
-        os.makedirs(sub_sitemaps, exist_ok=True)
-    # Path to the uploaded sitemap XML file
-    xml_file_path = get_last_sitemap(name)
-    # Parse the XML file
-    tree = ET.parse(xml_file_path)
+
+
+
+def extract_urls_from_sitemap(file_path):
+    tree = ET.parse(file_path)
     root = tree.getroot()
-    # Namespace for the XML file
-    namespace = {'ns': 'http://www.sitemaps.org/schemas/sitemap/0.9'}
-    # Iterate through each sitemap in the XML
-    for sitemap in root.findall('ns:sitemap', namespace):
-        loc = sitemap.find('ns:loc', namespace).text
-        lastmod = sitemap.find('ns:lastmod', namespace).text
-        
-        # Download the sitemap
-        response = requests.get(loc)
-        if response.status_code == 200:
-            # Get the filename from the URL
-            filename = os.path.basename(loc)
-            filepath = os.path.join(sub_sitemaps, filename)
 
-            print (filepath)
+    namespaces = {'ns': 'http://www.sitemaps.org/schemas/sitemap/0.9'}
+    urls = [elem.text for elem in root.findall('.//ns:loc', namespaces)]
 
-    # Parse the XML file
-    # Get the URLs
-    # Download the HTML files
-    # Store the HTML files in a folder
-    # Store the HTML files in a database
-    # Delete the HTML files after a certain period of time
-    pass
+    return urls
 
-download_sub_sitemap("itjobs_pt")
+def main():
+    file_path = '/Users/mcessid/Documents/Projects/Essid Solutions/Internal/Development/Github/jobbot/itjobs_pt/sitemap/main/sitemap_20240725.xml'  # Update this to the correct path
+    urls = extract_urls_from_sitemap(file_path)
+
+    urls_df = pd.DataFrame(urls, columns=["URL"])
+    print(urls_df)
+
+if __name__ == "__main__":
+    main()
